@@ -51,8 +51,8 @@ var getMeSpotify = function(songName){
       
   });
 }
-var getMeMobie = function(movieName){
-  request("http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&r=json=true&apikey=d37af91c", function(error, response, body){
+var getMeMovie = function(movieName){
+  request("http://www.omdbapi.com/?t=" + movieName + "&y=&plot=full&tomatoes=true&apikey=d37af91c", function(error, response, body){
     if(!error && response.statusCode === 200){
       var jsonData = JSON.parse(body);
       console.log("Title: " + jsonData.Title);
@@ -90,7 +90,7 @@ var pick = function(caseData, functionData){
       getMeSpotify(functionData);
       break;
     case "movie-this":
-      getMeMobie(functionData);
+      getMeMovie(functionData);
       break;
     case "do-what-it-says":
       doWhatItSays();
