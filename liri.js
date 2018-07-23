@@ -1,5 +1,5 @@
 var Twitter = require("twitter");
-var spotify = require("node-spotify-api");
+var spotify = require("spotify");
 var request = require("request");
 var keys = require("./keys");
 var fs = require("fs");
@@ -27,23 +27,25 @@ var getMyTweets = function(){
   });
 
 }
-
+var getArtistNames = function(artist){
+  return artist.name;
+}
 
 var getMeSpotify = function(songName){
  
   spotify.search({ type: 'track', query: songName }, function(err, data) {
       if ( err ) {
-          console.log('Error occurred: ' + err);
+          console.log('An Error has  occurred please check your code!: ' + err);
           return;
       }
-      var songs =data.tracks.items;
-      for(var i=0; i<data.tracks.items; i++){
+      var songs = data.tracks.items;
+      for(var i=0; i<songs.length; i++){
         console.log(i);
         console.log("artists: " + songs[i].artists.map(
           getArtistNames));
         console.log("song name "+songs[i].name);
         console.log("preview song: " + songs[i].preview_url);
-        console.log("album: "+ songs[i].album_nawme);
+        console.log("album: "+ songs[i].album_name);
         console.log("----------------------------------------------");
 
       }  
@@ -71,6 +73,9 @@ var getMeMovie = function(movieName){
 var doWhatItSays = function() {
   fs.readFile("random.txt", "utf8", function(error, data) {
     console.log(data);
+
+    if (error) throw error;
+
     var dataArr = data.split(",");
     if (dataArr.length === 2) {
       pick(dataArr[0], dataArr[1]);
