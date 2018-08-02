@@ -1,5 +1,5 @@
 var Twitter = require("twitter");
-var spotify = require("spotify");
+var Spotify= require("node-spotify-api");
 var request = require("request");
 var keys = require("./keys");
 var fs = require("fs");
@@ -27,30 +27,36 @@ var getMyTweets = function(){
   });
 
 }
-var getArtistNames = function(artist){
-  return artist.name;
-}
 
-var getMeSpotify = function(songName){
- 
-  spotify.search({ type: 'track', query: songName }, function(err, data) {
-      if ( err ) {
-          console.log('An Error has  occurred please check your code!: ' + err);
-          return;
-      }
-      var songs = data.tracks.items;
-      for(var i=0; i<songs.length; i++){
-        console.log(i);
-        console.log("artists: " + songs[i].artists.map(
-          getArtistNames));
-        console.log("song name "+songs[i].name);
-        console.log("preview song: " + songs[i].preview_url);
-        console.log("album: "+ songs[i].album_name);
-        console.log("----------------------------------------------");
 
-      }  
-      
-      
+function getMeSpotify(x) {
+  var spotify = new Spotify(keys.spotify);
+  spotify.search({ type: 'track', query: x, limit: 5 }, function(err, data) {
+    if (err) {
+      return console.log('Error occurred: ' + err);
+      fs.appendFile('log.txt', "Error", function(err){
+        console.log("Error in the file, "+ err);
+      })
+    }
+    for (i = 0; i < data.tracks.items.length; i++) {
+      var spotifyData = data.tracks.items[i];
+      console.log(
+        "Artist | " + spotifyData.artists[0].name +
+        "\nSong | " + spotifyData.name +
+        "\nAlbum | " + spotifyData.album.name +
+        "\nAlbum Released | " + spotifyData.album.release_date +
+        "\nPlay Track | " + spotifyData.external_urls.spotify + 
+        "\n----------------------------------------------------------"
+      )
+      // fs.appendFile('log.txt', "\n" + spotifyData.artists[0].name)
+      // fs.appendFile('log.txt', "\n" + spotifyData.name)
+      // fs.appendFile('log.txt', "\n" + spotifyData.album.name)
+      // fs.appendFile('log.txt', "\n" + spotifyData.album.release_date)
+      // fs.appendFile('log.txt', "\n" + spotifyData.external_urls.spotify)
+      // fs.appendFile('log.txt', "\n" + "--------------------------------------")
+
+    }
+    //  console.log(JSON.stringify(data,null,2))
   });
 }
 var getMeMovie = function(movieName){
